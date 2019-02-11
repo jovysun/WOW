@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>getVertices</title>
+</head>
+
+<body>
+    <script src="../common/js/libs/delaunay.js"></script>
+    <script src="../common/js/util.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        var imgWidth = 1000,
+            imgHeight = 1000,
+            xSubNum = 12, //宽度分段数量
+            ySubNum = 12, //高度分段数量
+            offsetRatio = 0.5; 
+
+        window.onload = function () {
+            var canvas = document.createElement('canvas'),
+                ctx = canvas.getContext("2d");
+            canvas.width = imgWidth;
+            canvas.height = imgHeight;
+            document.querySelector('body').appendChild(canvas);
+
+
+            var vertices = getVertices(imgWidth, imgHeight, xSubNum, ySubNum, offsetRatio);
+            // 调用接口
+            var triangles = Delaunay.triangulate(vertices);
+            // 绘制三角路径
+            for (i = triangles.length; i;) {
+                ctx.beginPath();
+                --i;
+                ctx.moveTo(vertices[triangles[i]][0], vertices[triangles[i]][1]);
+                --i;
+                ctx.lineTo(vertices[triangles[i]][0], vertices[triangles[i]][1]);
+                --i;
+                ctx.lineTo(vertices[triangles[i]][0], vertices[triangles[i]][1]);
+                ctx.closePath();
+                ctx.stroke();
+            }
+
+        };
+    </script>
+</body>
+
+</html>

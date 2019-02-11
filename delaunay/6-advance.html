@@ -1,0 +1,123 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>advance</title>
+    <style class="cp-pen-styles">
+        body {
+            /* background-color: #000; */
+            margin: 0;
+            overflow: hidden;
+        }
+
+        a {
+            font-family: monospace;
+            color: #fff;
+            text-decoration: none;
+            background: #222;
+            padding: 4px 6px;
+            z-index: 100;
+        }
+
+        canvas {
+            position: absolute;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            -moz-backface-visibility: hidden;
+            -ms-backface-visibility: hidden;
+        }
+
+        #container {
+            position: absolute;
+            width: 768px;
+            height: 485px;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+        }
+
+        .hidden {
+            position: absolute;
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+    </div>
+    <script src="../common/js/libs/delaunay.js"></script>
+    <script src="../common/js/libs/TweenMax.min.js"></script>
+    <script src="../common/js/util.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // TODO 
+        // 1，碎片动画完成后增加完整图片的显示（没有裂纹效果）；
+        // 2，性能优化，增加缓存，减少dom操作；
+        // 3，细节优化，webpack打包；
+        // 4，完成一个标准的焦点图轮播组件
+
+        var imgWidth = 0,
+            imgHeight = 0,
+            xSubNum = 12, //宽度分段数量
+            ySubNum = 12, //高度分段数量
+            offsetRatio = 0.5;
+
+
+        var container = document.getElementById('container');
+
+        var sourceArray = [
+            "images/1.jpg",
+            "images/2.jpg",
+            "images/3.jpg",
+            "images/4.jpg"
+        ];
+        var index = 0;
+        preloadImg(sourceArray, function (images) {
+            slide(images);
+        })
+
+        // 执行动画
+        function slide(images) {
+            var image = images[index];
+            imgWidth = image.width;
+            imgHeight = image.height;
+
+            var vertices = getVertices(imgWidth, imgHeight, xSubNum, ySubNum, offsetRatio);
+            var fragments = getFragments(vertices, image);
+
+            var cvsArray = [];
+            fragments.forEach(function (element, index) {
+                var fragmentCvs = element.canvas;
+                cvsArray.push(fragmentCvs);
+                container.appendChild(fragmentCvs);
+            })
+
+            TweenMax.set(container, {
+                perspective: 500
+            });
+            TweenMax.staggerFromTo(cvsArray, 0.2, {
+                opacity: 0,
+                z: 100,
+                scale: 2
+            }, {
+                opacity: 1,
+                z: 0,
+                scale: 1
+            }, 0.05, function () {
+                // 完成一幅后切换下一幅
+                container.innerHTML = '';
+                index === sourceArray.length - 1 ? index = 0 : index++;
+                slide(images);
+            });
+
+
+        }
+    </script>
+</body>
+
+</html>

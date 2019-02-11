@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>getFragments</title>
+    <style>
+        canvas {
+            position: absolute;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            -moz-backface-visibility: hidden;
+            -ms-backface-visibility: hidden;
+        }
+
+        #container {
+            position: absolute;
+            width: 768px;
+            height: 485px;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+    </div>
+    <script src="../common/js/libs/delaunay.js"></script>
+    <script src="../common/js/util.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        var imgWidth = 0,
+            imgHeight = 0,
+            xSubNum = 12, //宽度分段数量
+            ySubNum = 12, //高度分段数量
+            offsetRatio = 0.5;
+
+
+        var container = document.getElementById('container');
+
+        window.onload = function () {
+
+            var image = new Image();
+            image.onload = function () {
+                imgWidth = image.width;
+                imgHeight = image.height;
+
+                var vertices = getVertices(imgWidth, imgHeight, xSubNum, ySubNum, offsetRatio);
+                var fragments = getFragments(vertices, image);
+                for (var i = 0; i < fragments.length; i++) {
+                    var fragmentCvs = fragments[i].canvas;
+                    container.appendChild(fragmentCvs);
+                }
+            }
+            image.src = 'images/1.jpg';
+
+        };
+    </script>
+</body>
+
+</html>

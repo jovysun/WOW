@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>play</title>
+    <style>
+        canvas {
+            position: absolute;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            -moz-backface-visibility: hidden;
+            -ms-backface-visibility: hidden;
+        }
+
+        #container {
+            position: absolute;
+            width: 768px;
+            height: 485px;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+    </div>
+    <script src="../common/js/libs/delaunay.js"></script>
+    <script src="../common/js/libs/TweenMax.min.js"></script>
+    <script src="../common/js/util.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        var imgWidth = 0,
+            imgHeight = 0,
+            xSubNum = 12, //宽度分段数量
+            ySubNum = 12, //高度分段数量
+            offsetRatio = 0.5;
+
+
+        var container = document.getElementById('container');
+        var source = 'images/1.jpg';
+
+        window.onload = function () {
+
+            var image = new Image();
+            image.onload = function () {
+                
+                play(image);
+            }
+            image.src = source;
+
+        };
+        
+        // 执行动画
+        function play(image) {
+
+            imgWidth = image.width;
+            imgHeight = image.height;
+
+            var vertices = getVertices(imgWidth, imgHeight, xSubNum, ySubNum, offsetRatio);
+            var fragments = getFragments(vertices, image);
+
+            for (var i = 0; i < fragments.length; i++) {
+                var fragmentCvs = fragments[i].canvas;
+
+                container.appendChild(fragmentCvs);
+
+                TweenMax.fromTo(fragmentCvs, 1, {
+                    y: -fragmentCvs.height,
+                    opacity: 0
+                }, {
+                    y: 0,
+                    opacity: 1,
+                    ease: Power1.easeInOut
+                })
+
+            }
+
+        }
+    </script>
+</body>
+
+</html>
