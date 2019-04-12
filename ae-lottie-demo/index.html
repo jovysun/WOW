@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div class="stage"></div>
+    <script src="../common/js/libs/lottie.min.js"></script>
+    <script>
+    var stage = document.querySelector('.stage');
+    var anim = lottie.loadAnimation({
+        container: stage,   //包含动画的DOM元素
+        renderer: 'svg',  
+        loop: false, 
+        autoplay: true, 
+        path: 'loading.json',   //动画的路径
+    });
+    anim.addEventListener('complete', function(){
+        console.log('complete:' + Date.now());
+        anim.destroy();
+    })
+    </script>
+</body>
+</html>
